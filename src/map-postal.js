@@ -17,7 +17,7 @@ const center = {
   lng: -130.605469,
 };
 
-function MyComponent(props) {
+function mapForPostal(props) {
   const [text1HasWarning, setText1HasWarning] = useState(false);
   const [autocomplete, setAutocomplete] = useState();
   const { isLoaded } = useJsApiLoader({
@@ -28,6 +28,7 @@ function MyComponent(props) {
 
   const [map, setMap] = React.useState(null);
   function onLoadd(autocomplete) {
+    console.log();
     setAutocomplete(autocomplete);
 
     autocomplete.bindTo("bounds", map);
@@ -35,7 +36,6 @@ function MyComponent(props) {
 
   function onPlaceChanged() {
     if (autocomplete !== null) {
-      console.log(autocomplete);
       autocomplete.setComponentRestrictions({
         country: ["ca"],
       });
@@ -47,17 +47,19 @@ function MyComponent(props) {
         anchorPoint: new google.maps.Point(0, -29),
       });
       console.log(autocomplete.getPlace());
-      let reg = "^[A-Za-z]d[A-Za-z][ -]?d[A-Za-z]d$";
+      let reg = new RegExp(
+        /^[ -][A-Za-z][A-Za-z][ -][A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/
+      );
+
       if (place.formatted_address != undefined) {
         const split_str = place.formatted_address.split(",");
-        // if (!reg.test(split_str[0])) {
-        //   console.log("placeSer");
-        // }
         if (
           !place.geometry ||
           !place.geometry.location ||
-          split_str.length !== 4
+          split_str.length !== 3 ||
+          !reg.test(split_str[1])
         ) {
+          console.log(reg.test(split_str[1]));
           setText1HasWarning(true);
           return;
         }
@@ -120,10 +122,10 @@ function MyComponent(props) {
             backgroundColor: "#fff",
           }}
           id="outlined-search"
-          label="Enter Location"
+          label="Enter Postal Code"
           type="search"
           variant="outlined"
-          helperText="must be a complete address"
+          helperText="must be a postal code"
           error={text1HasWarning}
         />
       </Autocomplete>
@@ -131,4 +133,4 @@ function MyComponent(props) {
   ) : null;
 }
 
-export default MyComponent;
+export default mapForPostal;
