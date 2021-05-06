@@ -22,7 +22,7 @@ function MyComponent(props) {
   const [autocomplete, setAutocomplete] = useState();
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "AIzaSyD5jTwZ8f0l4csF2UU3mBieyR8SCYFehFs",
+    googleMapsApiKey: "GOOGLE_API_KEY",
     libraries: ["places"],
   });
 
